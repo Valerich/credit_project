@@ -14,7 +14,7 @@ class CreateOfferRequestsTask(Task):
 
     def run(self, borrower_id, offer_id=None):
         borrower = self.get_borrower(borrower_id)
-        offers = self.get_offers(borrower)
+        offers = self.get_offers(borrower, offer_id)
         self.create_credit_requests(borrower, offers)
 
     def get_borrower(self, borrower_id):
@@ -47,30 +47,3 @@ class CreateOfferRequestsTask(Task):
             CreditRequest.objects.create(borrower=borrower, offer=offer)
 
 app.tasks.register(CreateOfferRequestsTask)
-
-# from choithrams.celery_app import app
-#
-#
-# logger = logging.getLogger('tasks')
-# Product = get_model('catalogue', 'Product')
-#
-#
-# @app.task(ignore_result=True)
-# def call_command(name, *args, **options):
-#     dj_call_command(name=name, *args, **options)
-#
-#
-# @app.task()
-# def update_products():
-#     logger.info(u"Updating products prices")
-#     now = datetime.datetime.now()
-#     products = Product.objects.all()
-#     for product in products:
-#         product.update_offers(now=now)
-#
-#     try:
-#         update_index.Command().handle()
-#     except Exception as ex:
-#         logger.error(ex)
-#
-#     logger.info(u"Updating product prices. Done")
